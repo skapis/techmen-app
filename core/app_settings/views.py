@@ -110,7 +110,7 @@ def change_validity_work_item_desc(request, item_desc_id):
 @login_required(login_url='auth/login')
 def create_enums(request):
     work_list_count = WorkList.objects.all().count()
-    item_desc_count = WorkItemDescription.objects.all.count()
+    item_desc_count = WorkItemDescription.objects.all().count()
 
     if work_list_count == 0:
         for work_item in WORK_LIST_ITEMS:
