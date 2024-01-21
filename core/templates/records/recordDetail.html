@@ -1,0 +1,335 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<h1 class="mb-3" id="pagetitle">Detail záznamu</h1>
+{% include 'partials/messages.html' %}
+<div class="row">
+    <div class="col">
+        <div class="card rounded-lg mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Vytvořil</p>
+                    </div>
+                    <div class="col-sm-9">
+                    <p class="text-muted mb-0">{{record.user.first_name}} {{record.user.last_name}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Vytvořeno</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{record.created}}</p>
+                    </div>
+                </div>
+                {% if record.confirmed %}
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Datum potvrzení</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{record.confirmed_at}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Potvrzeno</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{record.confirmed_by}}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <form action="#" method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="name" class="font-weight-bolder">Název</label>
+                    <input type="text" name="name" disabled value="{{record.name}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                    <label for="date" class="font-weight-bolder">Datum</label>
+                    <input type="date" name="date" disabled value="{{record.date|date:'Y-m-d'}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                    <label for="internalId" class="font-weight-bolder">Interní číslo zakázky</label>
+                    <input type="text" name="internalId" disabled value="{{record.internalId}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                    <label for="line" class="font-weight-bolder">Linka</label>
+                    <select name="line" class="form-control rounded-sm mr-2" disabled>
+                        {% for line in lines %}
+                        {% if record.lineCategory.lineId == line.lineId %}
+                            <option selected value="{{line.lineId}}">{{line.lineName}}</option>
+                        {% else %}
+                            <option value="{{line.lineId}}">{{line.lineName}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="font-weight-bolder">Popis</label>
+                    <textarea name="description" rows="10" class="form-control rounded-sm mr-2" disabled>{{record.description}}</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="description" class="font-weight-bolder">Počet km doprava</label>
+                        <input type="number" disabled name="distance" min="0" step='0.01' value="{{record.distance}}" class="form-control rounded-sm" required>
+                    </div>
+                    <div class="col">
+                        <label for="transportPrice" class="font-weight-bolder">Cena dopravného (Kč/km)</label>
+                        <input type="number" disabled name="transportPrice" min="0" value="{{record.transportPrice}}" class="form-control rounded-sm" required>
+                    </div>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="workPrice" class="font-weight-bolder">Cena práce (Kč/min)</label>
+                    <input type="number" disabled name="workPrice" min="0" value="{{record.workPrice}}" class="form-control rounded-sm" required>
+                </div>
+                <div>
+                    <h3 class="py-3 font-weight-bolder mb-0" >Provedené práce na stroji</h3>
+                </div>
+                <div class="form-group py-2">
+                    <div class="row">
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Provedené práce</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Záznam</label>
+                        </div>
+                    </div>
+                    {% for work_item in workDone %}
+                        <div class="form-row px-4 workRow" id="{{work_item.workId}}">
+                            <div class="col d-flex align-items-center justify-content-start">
+                                <div>
+                                    {% if work_item.workDone %}
+                                        <input checked type="checkbox" disabled class="form-check-input" name="works" value="{{work_item.workListItem.itemId}}">
+                                    {% else %}
+                                        <input type="checkbox" disabled class="form-check-input" name="works" value="{{work_item.workListItem.itemId}}">
+                                    {% endif %}
+                                    <label for="{{work_item.name}}" class="form-check-label">{{work_item.workListItemName}}</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label for="line" class="font-weight-bolder"></label>
+                                <select name="itemDesc" class="form-control rounded-sm mr-2" disabled>
+                                    {% for itemDesc in workDesc %}
+                                    {% if itemDesc == work_item.itemDesc %}
+                                        <option selected value="{{itemDesc.workItemDescId}}">{{work_item.name}}</option>
+                                    {% else %}
+                                        <option value="{{itemDesc.workItemDescId}}">{{itemDesc.name}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                        </div>
+                        <hr>
+                    {% endfor %}
+                </div>
+                <div>
+                    <h3 class="py-3 font-weight-bolder mb-0" >Závady</h3>
+                </div>
+                <div class="form-group py-2">
+                    <div class="row">
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Název závady</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Čas (min)</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Odstranění závady</label>
+                        </div>  
+                    </div>
+                    <div id="issues">
+                        {% for issue in issues %}
+                        <div class="form-row issueRow pb-2" id="{{issue.issueId}}">
+                            <div class="col">
+                                <input disabled type="text" name="issueName" class="form-control rounded-sm" value="{{issue.issueName}}" required>
+                            </div>
+                            <div class="col">
+                                <input disabled type="number" name="fixTime" class="form-control rounded-sm" value="{{issue.fixTime}}">
+                            </div>
+                            <div class="col">
+                                <input disabled type="text" name="resolution" class="form-control rounded-sm" value="{{issue.resolution}}" required>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <div class="d-none addBtn mt-2">
+                        <p class="btn btn-primary rounded-sm mr-2" id="addIssue">Přidat závadu</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="py-3 font-weight-bolder mb-0" >Komponenty</h3>
+                </div>
+                <div class="form-group py-2">
+                    <div class="row">
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Název komponenty</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Číslo komponenty</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Výměna komponenty</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Cena komponenty (Kč)</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Objednáno</label>
+                        </div>
+                    </div>
+                    <div id="components">
+                    {% for component in components %}
+                        <div class="form-row componentRow pb-2" id="{{component.componentId}}">
+                            <div class="col">
+                                <input type="text" disabled name="componentName" value="{{component.componentName}}" class="form-control rounded-sm" required>
+                            </div>
+                            <div class="col">
+                                <input type="text" disabled name="componentSerialNumber" value="{{component.componentSerialNumber}}" class="form-control rounded-sm" required>
+                            </div>
+                            <div class="col">
+                                <input type="text" disabled name="componentChange" value="{{component.componentChange}}" class="form-control rounded-sm" required>
+                            </div>
+                            <div class="col">
+                                <input type="number" disabled step="0.01" name="componentPrice" value="{{component.componentPrice}}" class="form-control rounded-sm" required>
+                            </div>
+                            <div class="col d-flex align-items-center justify-content-center">
+                                {% if component.ordered %}
+                                    <input disabled checked type="checkbox" class="form-check-input" name="componentOrdered" >
+                                {% else %}
+                                    <input disabled type="checkbox" class="form-check-input" name="componentOrdered" >
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <div class="d-none addBtn mt-2">
+                        <p class="btn btn-primary rounded-sm mr-2" id="addComponent">Přidat komponentu</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="py-3 font-weight-bolder mb-0" >Cenové nabídky</h3>
+                </div>
+                <div class="form-group py-2">
+                    <div class="row">
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Datum</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Číslo dílu</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Čas výměny (min)</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Cena komponenty (Kč)</label>
+                        </div>
+                    </div>
+                    <div id="offers">
+                    {% for offer in offers %}
+                        <div class="form-row offerRow pb-2" id="{{offer.offerId}}">
+                            <div class="col">
+                                <input type="date" disabled name="offerDate" value="{{offer.offerDate|date:'Y-m-d'}}" class="form-control rounded-sm" required>
+                            </div>
+                            <div class="col">
+                                <input type="text" disabled name="componentSerialNumber" value="{{offer.componentSerialNumber}}" class="form-control rounded-sm" required>
+                            </div>
+                            <div class="col">
+                                <input type="number" disabled step="0.01" name="workTime" value="{{offer.workTime}}" class="form-control rounded-sm" required>
+                            </div>
+                            <div class="col">
+                                <input type="number" disabled step="0.01" name="offerPrice" value="{{offer.componentPrice}}" class="form-control rounded-sm" required>
+                            </div>
+                        </div>
+                        
+                    {% endfor %}
+                    </div>
+                    <div class="d-none addBtn mt-2">
+                        <p class="btn btn-primary rounded-sm mr-2" id="addOffer">Přidat nabídku</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% if record.confirmed %}
+<div>
+    <h3 class="py-3 font-weight-bolder mb-0" >Souhrn</h3>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="card rounded-lg mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Celková práce</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{recordSum.0.workPriceSum}} Kč</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Komponenty</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{recordSum.0.componentPriceSum}} Kč</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Doprava</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{recordSum.0.transportPriceSum}} Kč</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Celkem</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="font-weight-bold mb-0">{{recordSum.0.total}} Kč</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="row px-3 mb-3 actions">
+    {% if not record.confirmed %}
+    <button class="btn btn-primary rounded-sm mr-2" id="editRec">Upravit</button>
+    <form action="{% url 'delete_record' record.recordId %}" class="mb-0 mr-2" method="get">
+        <button type="submit" class="btn btn-danger rounded-sm">Smazat</button>
+    </form>
+    <form action="{% url 'confirm_record' record.recordId %}" class="mb-0" method="get">
+        <button type="submit" class="btn btn-success rounded-sm">Potvrdit</button>
+    </form>
+    {% else %}
+    <form action="{% url 'export_record' record.recordId %}" class="mb-0" method="get">
+        <button class="btn btn-success rounded-sm mr-2"><i class="fa fa-file-excel"></i> Exportovat</button>
+    </form>
+    {% endif %}
+</div>
+<div class="row edit px-3">
+
+</div>
+<script src="{% static 'js/editRecord.js' %}"></script>
+{% endblock %}

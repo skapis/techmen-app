@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Záznam o provedení preventivní údržby</title>
+    <style>
+        @font-face {
+            font-family: Roboto;
+            src: "file://C:\Users\jakub\Documents\Django_techmen\core\core\static\fonts\Roboto-Bold.ttf";
+        }
+
+        @font-face {
+            font-family: Roboto;
+            src: "file://C:\Users\jakub\Documents\Django_techmen\core\core\static\fonts\Roboto-Regular.ttf";
+            font-weight: bold;
+        }
+        body {
+            text-align: center;
+            font-family: "Roboto", sans-serif;
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Záznam o provedení preventivní údržby na lince</h1>
+    <br>
+
+    <table>
+        <tr>
+            <td>typ stroje</td>
+            <td>{{record.lineCategory.lineName}}</td>
+        </tr>
+        <tr>
+            <td>datum výroby</td>
+            <td>{{record.lineCategory.lineDate}}</td>
+        </tr>
+        <tr>
+            <td>výrobní číslo</td>
+            <td>{{record.lineCategory.lineSerialNumber}}</td>
+        </tr>
+        <tr>
+            <td>provedeno dne</td>
+            <td>{{record.date}}</td>
+        </tr>
+        <tr>
+            <td>umístění stroje</td>
+            <td>{{record.lineCategory.lineLocation}}</td>
+        </tr>
+        <tr>
+            <td>interní číslo zakázky</td>
+            <td>{{record.internalId}}</td>
+        </tr>
+    </table>
+
+</body>
+</html>

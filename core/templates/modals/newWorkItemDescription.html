@@ -1,0 +1,30 @@
+{% load static %}
+{% block content %}
+<div class="modal fade" id="newWorkItemDescription" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-lg">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-bold">Nová položka</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{% url 'work_item_desc_add' %}" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name" class="font-weight-bolder">Název</label>
+                    <input type="text" name="name" class="form-control rounded-sm" required>
+                </div>
+                <div class="invalid-feedback" id="invalid_line">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" id="submitBtn" class="btn btn-primary btn-block rounded-sm" value="Uložit">
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+<script src="#"></script>
+{% endblock %}

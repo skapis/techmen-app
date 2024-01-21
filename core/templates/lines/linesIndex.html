@@ -1,0 +1,63 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<div>
+    <div>
+        <h1 class="mb-3 font-weight-bold">Linky</h1>
+        {% include 'partials/messages.html' %}
+    </div>
+    <div class="row px-3 mb-3">
+        <button data-toggle="modal" data-target="#newLine" class="btn btn-primary rounded-lg">Nová linka</button>
+        {% include 'modals/newLine.html' %}
+    </div>
+    {% if lines|length != 0%}
+        <div>
+            <div>
+                <div class="row p-3">
+                    <div class="col bg-white overflow-auto border rounded-lg">
+                        <table class="table table-borderless mb-0">
+                            <thead class="border-bottom">
+                                <th scope="col">Název</th>
+                                <th scope="col">Výrobní číslo</th>
+                                <th scope="col">Datum výroby</th>
+                                <th scope="col">Umístění stroje</th>
+                                <th scope="col">Platnost</th>
+                            </thead>
+                            <tbody>
+                                {% for line in lines %}
+                                <tr id="{{line.lineId}}">
+                                    <td><a href="{% url 'line' line.lineId %}">{{line.lineName}}</a></td>
+                                    <td>{{line.lineSerialNumber}}</td>
+                                    <td>{{line.lineDate|date:'d.m.Y'}}</td>
+                                    <td>{{line.lineLocation}}</td>
+                                    <td>
+                                        {% if line.valid %}
+                                        <a href="{% url 'change_line' line.lineId %}" class="btn btn-outline-success border-0 rounded-lg"><i class="fa fa-check"></i></a>
+                                        {% else %}
+                                            <a href="{% url 'change_line' line.lineId %}" class="btn btn-outline-danger border-0 rounded-lg"><i class="fa fa-xmark"></i></a>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button data-toggle="modal" data-target="#edit_{{line.lineId}}" class="btn btn-outline-primary border-0 rounded-lg">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </td>
+                                    {% include 'modals/editLine.html' with line=line %}
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col text-center">
+                Žádná data
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

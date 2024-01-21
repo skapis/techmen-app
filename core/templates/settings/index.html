@@ -1,0 +1,94 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<div>
+    <div>
+        <h1 class="mb-3 font-weight-bold">Nastavení</h1>
+        {% include 'partials/messages.html' %}
+    </div>
+    <div>
+        <h1 class="mb-3 font-weight-bold">Seznam provedených prací na stroji</h1>
+    </div>
+    <div class="row px-3">
+        <button data-toggle="modal" data-target="#newWorkListItem" class="btn btn-primary rounded-lg">Přidat novou hodnotu</button>
+        {% include 'modals/newWorkListItem.html' %}
+    </div>
+    <div>
+        <div class="row p-3">
+            <div class="col bg-white overflow-auto border rounded-lg">
+                <table class="table table-borderless mb-0">
+                    <thead class="border-bottom">
+                        <th scope="col">Název práce</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Platnost</th>
+
+                    </thead>
+                    <tbody>
+                        {% for work  in workList  %}
+                        <tr id="{{work.itemId}}">
+                            <td>{{work.name}}</td>
+                            <td>{{work.itemId}}</td>
+                            <td>
+                                {% if work.valid %}
+                                    <a href="{% url 'worklist_change' work.itemId %}" class="btn btn-outline-success border-0 rounded-lg"><i class="fa fa-check"></i></a>
+                                {% else %}
+                                    <a href="{% url 'worklist_change' work.itemId %}" class="btn btn-outline-danger border-0 rounded-lg"><i class="fa fa-xmark"></i></a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button data-toggle="modal" data-target="#edit_{{work.itemId}}" class="btn btn-outline-primary border-0 rounded-lg">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </td>
+                            {% include 'modals/editWorkListItem.html' with work=work %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h2 class="mb-3 font-weight-bold">Seznam popisů k provedené práci</h2>
+    </div>
+    <div class="row px-3">
+        <button data-toggle="modal" data-target="#newWorkItemDescription" class="btn btn-primary rounded-lg">Přidat novou hodnotu</button>
+        {% include 'modals/newWorkItemDescription.html' %}
+    </div>
+    <div>
+        <div class="row p-3">
+            <div class="col bg-white overflow-auto border rounded-lg">
+                <table class="table table-borderless mb-0">
+                    <thead class="border-bottom">
+                        <th scope="col">Název</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Platnost</th>
+
+                    </thead>
+                    <tbody>
+                        {% for workDesc  in workItemDescription  %}
+                        <tr id="{{workDesc.workItemDescId}}">
+                            <td>{{workDesc.name}}</td>
+                            <td>{{workDesc.workItemDescId}}</td>
+                            <td>
+                                {% if workDesc.valid %}
+                                    <a href="{% url 'itemdesc_change' workDesc.workItemDescId %}" class="btn btn-outline-success border-0 rounded-lg"><i class="fa fa-check"></i></a>
+                                {% else %}
+                                    <a href="{% url 'itemdesc_change' workDesc.workItemDescId %}" class="btn btn-outline-danger border-0 rounded-lg"><i class="fa fa-xmark"></i></a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button data-toggle="modal" data-target="#edit_{{workDesc.workItemDescId}}" class="btn btn-outline-primary border-0 rounded-lg">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </td>
+                            {% include 'modals/editWorkItemDescription.html' with workDesc=workDesc %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

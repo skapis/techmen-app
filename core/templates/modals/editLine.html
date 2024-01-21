@@ -1,0 +1,39 @@
+{% load static %}
+{% block content %}
+<div class="modal fade" id="edit_{{line.lineId}}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-lg">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-bold">Editace linky</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{% url 'edit_line' line.lineId %}" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name" class="font-weight-bolder">Název linky</label>
+                    <input type="text" name="name" value="{{line.lineName}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                  <label for="name" class="font-weight-bolder">Datum výroby</label>
+                  <input type="date" name="date" value="{{line.lineDate|date:'Y-m-d'}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                  <label for="name" class="font-weight-bolder">Výrobní číslo</label>
+                  <input type="text" name="serialNumber" value="{{line.lineSerialNumber}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                  <label for="name" class="font-weight-bolder">Umístění</label>
+                  <input type="text" name="location" value="{{line.lineLocation}}" class="form-control rounded-sm" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" id="submitBtn" class="btn btn-primary btn-block rounded-sm" value="Uložit">
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock %}

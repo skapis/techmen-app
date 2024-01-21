@@ -1,0 +1,120 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<div>
+    <h1 class="mb-3 font-weight-bold">Nový záznam</h1>
+    {% include 'partials/messages.html' %}
+</div>
+<div>
+    <form action="#" method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="name" class="font-weight-bolder">Název</label>
+                    <input type="text" name="name" value="{{values.name}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                    <label for="date" class="font-weight-bolder">Datum</label>
+                    <input type="date" name="date" value="{{values.date}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                    <label for="internalId" class="font-weight-bolder">Interní číslo zakázky</label>
+                    <input type="text" name="internalId" value="{{values.internalId}}" class="form-control rounded-sm" required>
+                </div>
+                <div class="form-group">
+                    <label for="line" class="font-weight-bolder">Linka</label>
+                    <select name="line" class="form-control rounded-sm mr-2">
+                        {% for line in lines %}
+                            <option value="{{line.lineId}}">{{line.lineName}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="font-weight-bolder">Popis</label>
+                    <textarea name="description" value="{{values.description}}" rows="2" class="form-control rounded-sm mr-2" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="distance" class="font-weight-bolder">Počet km doprava</label>
+                        <input type="number" name="distance" min="0" step='0.01' value="{{values.distance}}" class="form-control rounded-sm" required>
+                    </div>
+                    <div class="col">
+                        <label for="transportPrice" class="font-weight-bolder">Cena dopravného ({{transportPrice.unit}})</label>
+                        <input type="number" name="transportPrice" min="0" value="{{transportPrice.value}}" class="form-control rounded-sm" required>
+                    </div>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="workPrice" class="font-weight-bolder">Cena práce ({{workPrice.unit}})</label>
+                    <input type="number" name="workPrice" min="0" value="{{workPrice.value}}" class="form-control rounded-sm" required>
+                </div>
+                <div>
+                    <h3 class="py-3 font-weight-bolder mb-0" >Provedené práce na stroji</h3>
+                </div>
+                <div class="form-group py-2">
+                    <div class="row">
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Provedené práce</label>
+                        </div>
+                        <div class="col">
+                            <label for="line" class="font-weight-bolder">Záznam</label>
+                        </div>
+                    </div>
+                    {% for work_item in works %}
+                        <div class="form-row px-4 workRow">
+                            <div class="col">
+                                <input type="checkbox" class="form-check-input" name="works" checked value="{{work_item.workListItem.itemId}}">
+                                <label for="{{work_item.name}}" class="form-check-label">{{work_item.name}}</label>
+                            </div>
+                            <div class="col">
+                                <label for="line" class="font-weight-bolder"></label>
+                                <select name="itemDesc" class="form-control rounded-sm mr-2 _{{work_item.itemId}}">
+                                    {% for itemDesc in workDesc %}
+                                    {% if itemDesc.name == 'Výchozí'%}
+                                        <option selected value="{{itemDesc.workItemDescId}}">{{itemDesc.name}}</option>
+                                    {% else %}
+                                        <option value="{{itemDesc.workItemDescId}}">{{itemDesc.name}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div>
+                        <h3 class="py-3 font-weight-bolder mb-0" >Závady</h3>
+                    </div>
+                    <div>
+                        <p class="btn btn-primary rounded-sm mr-2" id="addIssue">Přidat závadu</p>
+                    </div>
+                    <div id="issues">
+                        
+                    </div>
+                    <div>
+                        <h3 class="py-3 font-weight-bolder mb-0" >Komponenty</h3>
+                    </div>
+                    <div>
+                        <p class="btn btn-primary rounded-sm mr-2" id="addComponent">Přidat komponentu</p>
+                    </div>
+                    <div id="components">
+                        
+                    </div>
+                    <div>
+                        <h3 class="py-3 font-weight-bolder mb-0" >Cenové nabídky</h3>
+                    </div>
+                    <div>
+                        <p class="btn btn-primary rounded-sm mr-2" id="addOffer">Přidat nabídku</p>
+                    </div>
+                    <div id="offers">
+                        
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="submit" id="submitBtn" class="btn-lg btn-primary btn-block rounded-sm" value="Vytvořit nový záznam">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="{% static 'js/addRecord.js' %}"></script>
+{% endblock %}

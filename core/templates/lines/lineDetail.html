@@ -1,0 +1,97 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<h1 class="mb-3" id="pagetitle">Linka - {{line.lineName}}</h1>
+{% include 'partials/messages.html' %}
+<div class="row">
+    <div class="col">
+        <div class="card rounded-lg mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">ID linky</p>
+                    </div>
+                    <div class="col-sm-9">
+                    <p class="text-muted mb-0">{{line.lineId}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Název</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{line.lineName}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Výrobní číslo</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{line.lineSerialNumber}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Datum výroby</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{line.lineDate|date:'d.m.Y'}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                    <p class="mb-0">Umístění stroje</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{line.lineLocation}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<h2 class="mb-3 font-weight-bold">Záznamy</h2>
+{% if records|length != 0%}
+<div class="row p-3">
+    <div class="col bg-white overflow-auto border rounded-lg">
+        <table class="table table-borderless mb-0">
+            <thead class="border-bottom">
+                <th scope="col">Název</th>
+                <th scope="col">Linka</th>
+                <th scope="col">Datum</th>
+
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr id="{{record.recordId}}">
+                    <td>{{record.name}}</td>
+                    <td>{{record.lineCategory.lineName}}</td>
+                    <td>{{record.date|date:'d.m.Y'}}</td>
+                    <td>
+                        <a href="{% url 'record' record.recordId %}" class="btn btn-outline-primary border-0 rounded-lg"><i class="fa-solid fa-circle-info"></i></a>
+                        {% if not record.confirmed %}
+                            <a href="{% url 'delete_record' record.recordId %}" class="btn btn-outline-danger border-0 rounded-lg"><i class="fa fa-trash"></i></a>
+                        {% else %}
+                            <a href="{% url 'export_record' record.recordId %}" class="btn btn-outline-success border-0 rounded-lg"><i class="fa fa-file-excel"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+    <div class="row">
+        <div class="col text-center">
+            Žádná data
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
